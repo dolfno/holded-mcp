@@ -1,0 +1,2821 @@
+openapi: 3.0.3
+info:
+  title: Holded API
+  description: |
+    Holded's REST API for managing invoicing, CRM, projects, team, and accounting.
+    
+    The API is organized around REST, using HTTP response codes and returning metadata in JSON format.
+    
+    All "List" methods (GET) are paginated - use the `page` query parameter (e.g., ?page=2).
+    
+    All requests must be authenticated using an API key in the header.
+  version: 1.0.0
+  contact:
+    email: developers@holded.com
+  x-logo:
+    url: https://files.readme.io/f2d24f9-small-Holded_H_Logo_R.png
+
+servers:
+  - url: https://api.holded.com/api
+    description: Production server
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Treasuries
+    description: Manage treasury accounts
+  - name: Contacts
+    description: Manage clients and providers
+  - name: Expenses Accounts
+    description: Manage expenses accounts
+  - name: Numbering Series
+    description: Manage numbering series
+  - name: Products
+    description: Manage products and inventory
+  - name: Sales Channels
+    description: Manage sales channels
+  - name: Warehouses
+    description: Manage warehouses and stock
+  - name: Payments
+    description: Manage payments
+  - name: Taxes
+    description: Get tax information
+  - name: Documents
+    description: Manage sales and purchase documents
+  - name: Contact Groups
+    description: Manage contact groups
+  - name: Remittances
+    description: Manage remittances
+  - name: Services
+    description: Manage services
+  - name: Funnels
+    description: Manage CRM funnels
+  - name: Leads
+    description: Manage CRM leads
+  - name: Events
+    description: Manage CRM events
+  - name: Bookings
+    description: Manage bookings and appointments
+  - name: Projects
+    description: Manage projects
+  - name: Tasks
+    description: Manage tasks
+  - name: Time Tracking
+    description: Manage time tracking
+  - name: Employees
+    description: Manage employees
+  - name: Daily Ledger
+    description: Manage accounting entries
+  - name: Chart of Accounts
+    description: Manage accounting accounts
+
+paths:
+  # INVOICE API - TREASURIES
+  /invoicing/v1/treasuries:
+    get:
+      tags:
+        - Treasuries
+      summary: List Treasuries Accounts
+      description: Get all treasury accounts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Treasury'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Treasuries
+      summary: Create Treasury Account
+      description: Create a new treasury account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TreasuryInput'
+      responses:
+        '201':
+          description: Treasury created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/treasuries/{treasuryId}:
+    get:
+      tags:
+        - Treasuries
+      summary: Get Treasury Account
+      description: Get a specific treasury account
+      parameters:
+        - $ref: '#/components/parameters/TreasuryIdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Treasury'
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - CONTACTS
+  /invoicing/v1/contacts:
+    get:
+      tags:
+        - Contacts
+      summary: List Contacts
+      description: Get all your contacts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Contacts
+      summary: Create Contact
+      description: Create a new contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '201':
+          description: Contact created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/contacts/{contactId}:
+    get:
+      tags:
+        - Contacts
+      summary: Get Contact
+      description: Get a specific contact
+      parameters:
+        - $ref: '#/components/parameters/ContactIdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Contacts
+      summary: Update Contact
+      description: Update a specific contact
+      parameters:
+        - $ref: '#/components/parameters/ContactIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '200':
+          description: Contact updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Contacts
+      summary: Delete Contact
+      description: Delete a specific contact
+      parameters:
+        - $ref: '#/components/parameters/ContactIdParam'
+      responses:
+        '204':
+          description: Contact deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/contacts/{contactId}/attachments:
+    get:
+      tags:
+        - Contacts
+      summary: Get contact attachments list
+      description: Get list of attachments for a contact
+      parameters:
+        - $ref: '#/components/parameters/ContactIdParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/contacts/{contactId}/attachments/{attachmentId}:
+    get:
+      tags:
+        - Contacts
+      summary: Get attachment
+      description: Get a specific attachment
+      parameters:
+        - $ref: '#/components/parameters/ContactIdParam'
+        - name: attachmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - EXPENSES ACCOUNTS
+  /invoicing/v1/expensesaccounts:
+    get:
+      tags:
+        - Expenses Accounts
+      summary: List Expenses Accounts
+      description: Get all expenses accounts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Expenses Accounts
+      summary: Create Expenses Account
+      description: Create a new expenses account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Expenses account created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/expensesaccounts/{accountId}:
+    get:
+      tags:
+        - Expenses Accounts
+      summary: Get Expenses Account
+      description: Get a specific expenses account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Expenses Accounts
+      summary: Update Expenses Account
+      description: Update a specific expenses account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Expenses account updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Expenses Accounts
+      summary: Delete Expenses Account
+      description: Delete a specific expenses account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Expenses account deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - NUMBERING SERIES
+  /invoicing/v1/numberingseries/{type}:
+    get:
+      tags:
+        - Numbering Series
+      summary: Get Numbering Series by Type
+      description: Get numbering series by type
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Numbering Series
+      summary: Create Numbering Serie
+      description: Create a new numbering serie
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Numbering serie created successfully
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Numbering Series
+      summary: Update Numbering Serie
+      description: Update a numbering serie
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Numbering serie updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Numbering Series
+      summary: Delete Numbering Serie
+      description: Delete a numbering serie
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Numbering serie deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - PRODUCTS
+  /invoicing/v1/products:
+    get:
+      tags:
+        - Products
+      summary: List Products
+      description: Get all your products
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Products
+      summary: Create Product
+      description: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/products/{productId}:
+    get:
+      tags:
+        - Products
+      summary: Get Product
+      description: Get a specific product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Products
+      summary: Update Product
+      description: Update a specific product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Products
+      summary: Delete Product
+      description: Delete a specific product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses:
+        '204':
+          description: Product deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/products/{productId}/image:
+    get:
+      tags:
+        - Products
+      summary: Get Product Main Image
+      description: Get the main image of a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/products/{productId}/images:
+    get:
+      tags:
+        - Products
+      summary: List Product Images
+      description: Get all images of a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/products/{productId}/image/{imageFilename}:
+    get:
+      tags:
+        - Products
+      summary: Get Product Secondary Image
+      description: Get a secondary image of a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+        - name: imageFilename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/products/{productId}/stock:
+    put:
+      tags:
+        - Products
+      summary: Update Product stock
+      description: Update the stock of a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Product stock updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - SALES CHANNELS
+  /invoicing/v1/saleschannels:
+    get:
+      tags:
+        - Sales Channels
+      summary: List Sales Channels
+      description: Get all sales channels
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Sales Channels
+      summary: Create Sales Channel
+      description: Create a new sales channel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Sales channel created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/saleschannels/{channelId}:
+    get:
+      tags:
+        - Sales Channels
+      summary: Get Sales Channel
+      description: Get a specific sales channel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Sales Channels
+      summary: Update Sales Channel
+      description: Update a specific sales channel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Sales channel updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Sales Channels
+      summary: Delete Sales Channel
+      description: Delete a specific sales channel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Sales channel deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - WAREHOUSES
+  /invoicing/v1/warehouses:
+    get:
+      tags:
+        - Warehouses
+      summary: List Warehouses
+      description: Get all warehouses
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Warehouses
+      summary: Create Warehouse
+      description: Create a new warehouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Warehouse created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/warehouses/{warehouseId}:
+    get:
+      tags:
+        - Warehouses
+      summary: Get Warehouse
+      description: Get a specific warehouse
+      parameters:
+        - name: warehouseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Warehouses
+      summary: Update Warehouse
+      description: Update a specific warehouse
+      parameters:
+        - name: warehouseId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Warehouse updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Warehouses
+      summary: Delete Warehouse
+      description: Delete a specific warehouse
+      parameters:
+        - name: warehouseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Warehouse deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/warehouses/{warehouseId}/stock:
+    get:
+      tags:
+        - Warehouses
+      summary: List products stock
+      description: Get all products stock in a warehouse
+      parameters:
+        - name: warehouseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - PAYMENTS
+  /invoicing/v1/payments:
+    get:
+      tags:
+        - Payments
+      summary: List Payments
+      description: Get all payments
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Payments
+      summary: Create Payment
+      description: Create a new payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Payment created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/payments/{paymentId}:
+    get:
+      tags:
+        - Payments
+      summary: Get Payment
+      description: Get a specific payment
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Payments
+      summary: Update Payment
+      description: Update a specific payment
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Payment updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Payments
+      summary: Delete Payment
+      description: Delete a specific payment
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Payment deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - TAXES
+  /invoicing/v1/taxes:
+    get:
+      tags:
+        - Taxes
+      summary: Get Taxes
+      description: Get all taxes
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - DOCUMENTS
+  /invoicing/v1/documents/{docType}:
+    get:
+      tags:
+        - Documents
+      summary: List Documents
+      description: Get all your documents by type
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - invoice
+              - estimate
+              - order
+              - delivery
+              - purchase
+              - proforma
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Documents
+      summary: Create Document
+      description: Create a new document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentInput'
+      responses:
+        '201':
+          description: Document created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}:
+    get:
+      tags:
+        - Documents
+      summary: Get Document
+      description: Get a specific document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Documents
+      summary: Update Document
+      description: Update a specific document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentInput'
+      responses:
+        '200':
+          description: Document updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Documents
+      summary: Delete Document
+      description: Delete a specific document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Document deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/pay:
+    post:
+      tags:
+        - Documents
+      summary: Pay Document
+      description: Mark a document as paid
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Document marked as paid
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/send:
+    post:
+      tags:
+        - Documents
+      summary: Send Document
+      description: Send a document to contact
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Document sent successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/pdf:
+    get:
+      tags:
+        - Documents
+      summary: Get Document PDF
+      description: Get PDF of a document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PDF file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/ship:
+    post:
+      tags:
+        - Documents
+      summary: Ship All Items
+      description: Ship all items in a document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Items shipped successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/shipline:
+    post:
+      tags:
+        - Documents
+      summary: Ship items by line
+      description: Ship specific items by line
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Items shipped successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/shipped:
+    get:
+      tags:
+        - Documents
+      summary: Shipped units by item
+      description: Get shipped units by item
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/attach:
+    post:
+      tags:
+        - Documents
+      summary: Attach File to a specific document
+      description: Attach a file to a document
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: File attached successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/tracking:
+    post:
+      tags:
+        - Documents
+      summary: Update tracking info from specific document
+      description: Update tracking information
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Tracking info updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/{docType}/{documentId}/pipeline:
+    post:
+      tags:
+        - Documents
+      summary: Update pipeline from specific document
+      description: Update pipeline status
+      parameters:
+        - name: docType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Pipeline updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/documents/paymentmethods:
+    get:
+      tags:
+        - Documents
+      summary: List Payment methods
+      description: Get all payment methods
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - CONTACT GROUPS
+  /invoicing/v1/contactgroups:
+    get:
+      tags:
+        - Contact Groups
+      summary: List Contact Groups
+      description: Get all contact groups
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Contact Groups
+      summary: Create Contact Group
+      description: Create a new contact group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Contact group created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/contactgroups/{groupId}:
+    get:
+      tags:
+        - Contact Groups
+      summary: Get Contact Group
+      description: Get a specific contact group
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Contact Groups
+      summary: Update Contact Group
+      description: Update a specific contact group
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Contact group updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Contact Groups
+      summary: Delete Contact Group
+      description: Delete a specific contact group
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Contact group deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - REMITTANCES
+  /invoicing/v1/remittances:
+    get:
+      tags:
+        - Remittances
+      summary: List Remittances
+      description: Get all remittances
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/remittances/{remittanceId}:
+    get:
+      tags:
+        - Remittances
+      summary: Get Remittance
+      description: Get a specific remittance
+      parameters:
+        - name: remittanceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # INVOICE API - SERVICES
+  /invoicing/v1/services:
+    get:
+      tags:
+        - Services
+      summary: List Services
+      description: Get all services
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Services
+      summary: Create Service
+      description: Create a new service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Service created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /invoicing/v1/services/{serviceId}:
+    get:
+      tags:
+        - Services
+      summary: Get Service
+      description: Get a specific service
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Services
+      summary: Update Service
+      description: Update a specific service
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Service updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Services
+      summary: Delete Service
+      description: Delete a specific service
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Service deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # CRM API - FUNNELS
+  /crm/v1/funnels:
+    get:
+      tags:
+        - Funnels
+      summary: List Funnels
+      description: Get all funnels
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Funnels
+      summary: Create Funnel
+      description: Create a new funnel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Funnel created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/funnels/{funnelId}:
+    get:
+      tags:
+        - Funnels
+      summary: Get Funnel
+      description: Get a specific funnel
+      parameters:
+        - name: funnelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Funnels
+      summary: Update Funnel
+      description: Update a specific funnel
+      parameters:
+        - name: funnelId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Funnel updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Funnels
+      summary: Delete Funnel
+      description: Delete a specific funnel
+      parameters:
+        - name: funnelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Funnel deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # CRM API - LEADS
+  /crm/v1/leads:
+    get:
+      tags:
+        - Leads
+      summary: List Leads
+      description: Get all leads
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Leads
+      summary: Create Lead
+      description: Create a new lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Lead created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/leads/{leadId}:
+    get:
+      tags:
+        - Leads
+      summary: Get Lead
+      description: Get a specific lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Leads
+      summary: Update Lead
+      description: Update a specific lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Lead updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Leads
+      summary: Delete Lead
+      description: Delete a specific lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Lead deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/leads/{leadId}/notes:
+    post:
+      tags:
+        - Leads
+      summary: Create Lead Note
+      description: Create a note for a lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Note created successfully
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Leads
+      summary: Update Lead Note
+      description: Update a lead note
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Note updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/leads/{leadId}/tasks:
+    post:
+      tags:
+        - Leads
+      summary: Create Lead Task
+      description: Create a task for a lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Task created successfully
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Leads
+      summary: Update Lead Task
+      description: Update a lead task
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Task updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Leads
+      summary: Delete Lead Task
+      description: Delete a lead task
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/leads/{leadId}/dates:
+    put:
+      tags:
+        - Leads
+      summary: Update Lead Creation Date
+      description: Update the creation date of a lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Date updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/leads/{leadId}/stages:
+    put:
+      tags:
+        - Leads
+      summary: Update Lead Stage
+      description: Update the stage of a lead
+      parameters:
+        - name: leadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Stage updated successfully
+      security:
+        - ApiKeyAuth: []
+
+  # CRM API - EVENTS
+  /crm/v1/events:
+    get:
+      tags:
+        - Events
+      summary: List Events
+      description: Get all events
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Events
+      summary: Create Event
+      description: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Event created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/events/{eventId}:
+    get:
+      tags:
+        - Events
+      summary: Get Event
+      description: Get a specific event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Events
+      summary: Update Event
+      description: Update a specific event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Event updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Events
+      summary: Delete Event
+      description: Delete a specific event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Event deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # CRM API - BOOKINGS
+  /crm/v1/bookings/locations:
+    get:
+      tags:
+        - Bookings
+      summary: List Locations
+      description: Get all booking locations
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/bookings/locations/{locationId}/slots:
+    get:
+      tags:
+        - Bookings
+      summary: Get available slots for location
+      description: Get available time slots for a location
+      parameters:
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/bookings:
+    get:
+      tags:
+        - Bookings
+      summary: List Bookings
+      description: Get all bookings
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Bookings
+      summary: Create Booking
+      description: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Booking created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /crm/v1/bookings/{bookingId}:
+    get:
+      tags:
+        - Bookings
+      summary: Get Booking
+      description: Get a specific booking
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Bookings
+      summary: Update Booking
+      description: Update a specific booking
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Booking updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Bookings
+      summary: Cancel Booking
+      description: Cancel a specific booking
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Booking cancelled successfully
+      security:
+        - ApiKeyAuth: []
+
+  # PROJECTS API - PROJECTS
+  /projects/v1/projects:
+    get:
+      tags:
+        - Projects
+      summary: List Projects
+      description: Get all projects
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Projects
+      summary: Create Project
+      description: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Project created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /projects/v1/projects/{projectId}:
+    get:
+      tags:
+        - Projects
+      summary: Get Project
+      description: Get a specific project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Projects
+      summary: Update Project
+      description: Update a specific project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Project updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Projects
+      summary: Delete Project
+      description: Delete a specific project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Project deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /projects/v1/projects/{projectId}/summary:
+    get:
+      tags:
+        - Projects
+      summary: Get Project Summary
+      description: Get summary information for a project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # PROJECTS API - TASKS
+  /projects/v1/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: List Tasks
+      description: Get all tasks
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Tasks
+      summary: Create Task
+      description: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Task created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /projects/v1/tasks/{taskId}:
+    get:
+      tags:
+        - Tasks
+      summary: Get Task
+      description: Get a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Tasks
+      summary: Delete Task
+      description: Delete a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # PROJECTS API - TIME TRACKING
+  /projects/v1/projects/{projectId}/times:
+    get:
+      tags:
+        - Time Tracking
+      summary: Get Project Times
+      description: Get all time tracking entries for a project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Time Tracking
+      summary: Create Project Time
+      description: Create a time tracking entry for a project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Time entry created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /projects/v1/projects/{projectId}/times/{timeTrackingId}:
+    get:
+      tags:
+        - Time Tracking
+      summary: Get Project Time Entry
+      description: Get a specific time tracking entry
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timeTrackingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Time Tracking
+      summary: Update Project Time
+      description: Update a time tracking entry
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timeTrackingId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Time entry updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Time Tracking
+      summary: Delete Project Time
+      description: Delete a time tracking entry
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timeTrackingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Time entry deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /projects/v1/times:
+    get:
+      tags:
+        - Time Tracking
+      summary: List Times
+      description: Get all time tracking entries
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  # TEAM API - EMPLOYEES
+  /team/v1/employees:
+    get:
+      tags:
+        - Employees
+      summary: List all your employees
+      description: Get all employees
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Employees
+      summary: Create a new employee
+      description: Create a new employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Employee created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}:
+    get:
+      tags:
+        - Employees
+      summary: Get an Employee
+      description: Get a specific employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Employees
+      summary: Update an employee
+      description: Update a specific employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Employee updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Employees
+      summary: Delete an Employee
+      description: Delete a specific employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Employee deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  # TEAM API - EMPLOYEE TIME TRACKING
+  /team/v1/times:
+    get:
+      tags:
+        - Employees
+      summary: List all the time-trackings of all your employees
+      description: Get all time tracking entries
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/times/{timeId}:
+    get:
+      tags:
+        - Employees
+      summary: Get a specific time-tracking
+      description: Get a specific time tracking entry
+      parameters:
+        - name: timeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    put:
+      tags:
+        - Employees
+      summary: Update a time-tracking
+      description: Update a time tracking entry
+      parameters:
+        - name: timeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Time tracking updated successfully
+      security:
+        - ApiKeyAuth: []
+    delete:
+      tags:
+        - Employees
+      summary: Delete a time-tracking
+      description: Delete a time tracking entry
+      parameters:
+        - name: timeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Time tracking deleted successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}/times:
+    get:
+      tags:
+        - Employees
+      summary: List all the time-trackings of a single employee
+      description: Get time tracking entries for an employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Employees
+      summary: Create a time-tracking for an specific employee
+      description: Create a new time tracking entry for employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Time tracking created successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}/clockin:
+    post:
+      tags:
+        - Employees
+      summary: Employee clock-in
+      description: Clock in an employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee clocked in successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}/clockout:
+    post:
+      tags:
+        - Employees
+      summary: Employee clock-out
+      description: Clock out an employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee clocked out successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}/pause:
+    post:
+      tags:
+        - Employees
+      summary: Employee time-tracking pause
+      description: Pause employee time tracking
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Time tracking paused successfully
+      security:
+        - ApiKeyAuth: []
+
+  /team/v1/employees/{employeeId}/unpause:
+    post:
+      tags:
+        - Employees
+      summary: Employee time-tracking unpause
+      description: Unpause employee time tracking
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Time tracking unpaused successfully
+      security:
+        - ApiKeyAuth: []
+
+  # ACCOUNTING API - DAILY LEDGER
+  /accounting/v1/ledger:
+    get:
+      tags:
+        - Daily Ledger
+      summary: List all your entries
+      description: Get all accounting ledger entries
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Daily Ledger
+      summary: Create entry
+      description: Create a new accounting entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Entry created successfully
+      security:
+        - ApiKeyAuth: []
+
+  # ACCOUNTING API - CHART OF ACCOUNTS
+  /accounting/v1/accounts:
+    get:
+      tags:
+        - Chart of Accounts
+      summary: List all your accounting accounts
+      description: Get all accounting accounts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: Successful response
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Chart of Accounts
+      summary: Create a new accounting account
+      description: Create a new accounting account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Account created successfully
+      security:
+        - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: key
+      description: |
+        API key for authentication. Get your API key from https://app.holded.com/api
+        or Configuration (top bar) -> API.
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      required: false
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+
+    ContactIdParam:
+      name: contactId
+      in: path
+      description: Contact ID
+      required: true
+      schema:
+        type: string
+
+    ProductIdParam:
+      name: productId
+      in: path
+      description: Product ID
+      required: true
+      schema:
+        type: string
+
+    TreasuryIdParam:
+      name: treasuryId
+      in: path
+      description: Treasury ID
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Contact ID
+        name:
+          type: string
+          description: Contact name
+        email:
+          type: string
+          format: email
+          description: Contact email
+        phone:
+          type: string
+          description: Contact phone
+        type:
+          type: string
+          enum: [client, provider]
+          description: Contact type
+
+    ContactInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Contact name
+        email:
+          type: string
+          format: email
+          description: Contact email
+        phone:
+          type: string
+          description: Contact phone
+        type:
+          type: string
+          enum: [client, provider]
+          description: Contact type
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Product ID
+        name:
+          type: string
+          description: Product name
+        sku:
+          type: string
+          description: Product SKU
+        price:
+          type: number
+          format: float
+          description: Product price
+        description:
+          type: string
+          description: Product description
+
+    ProductInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Product name
+        sku:
+          type: string
+          description: Product SKU
+        price:
+          type: number
+          format: float
+          description: Product price
+        description:
+          type: string
+          description: Product description
+
+    Treasury:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Treasury ID
+        name:
+          type: string
+          description: Treasury name
+        balance:
+          type: number
+          format: float
+          description: Current balance
+
+    TreasuryInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Treasury name
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Document ID
+        docType:
+          type: string
+          description: Document type
+        contactId:
+          type: string
+          description: Contact ID
+        date:
+          type: string
+          format: date
+          description: Document date
+        total:
+          type: number
+          format: float
+          description: Total amount
+
+    DocumentInput:
+      type: object
+      required:
+        - contactId
+        - date
+      properties:
+        contactId:
+          type: string
+          description: Contact ID
+        date:
+          type: string
+          format: date
+          description: Document date
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                type: string
+                description: Product SKU
+              serviceId:
+                type: string
+                description: Service ID
+              quantity:
+                type: number
+                description: Quantity
+              price:
+                type: number
+                format: float
+                description: Unit price
